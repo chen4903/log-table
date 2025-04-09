@@ -11,11 +11,11 @@ fn main() {
     let options = r#"{"slippage": "0.5%", "deadline": 3600}"#;
 
     logger.table("LiFi Routes", table_data! {
-        "chainId" => chain_id,
-        "fromToken" => from_token,
-        "toToken" => to_token,
-        "amount" => format!("{} ether", from_amount),
-        "fromAddress" => from_address,
-        "options" => options,
+        chainId: chain_id,
+        fromToken: from_token,
+        toToken: to_token,
+        amount: format!("{} ether", from_amount),
+        fromAddress: from_address,
+        options: options,
     });
 }
