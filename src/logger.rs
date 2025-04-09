@@ -1,10 +1,26 @@
 use indexmap::IndexMap;
 
-pub struct Logger;
+pub struct Logger {
+    chain_id: Option<u64>,
+    provider: Option<String>,
+}
 
 impl Logger {
     pub fn new() -> Self {
-        Logger
+        Logger {
+            chain_id: None,
+            provider: None,
+        }
+    }
+
+    pub fn with_chain_id(mut self, chain_id: u64) -> Self {
+        self.chain_id = Some(chain_id);
+        self
+    }
+
+    pub fn with_provider(mut self, provider: impl Into<String>) -> Self {
+        self.provider = Some(provider.into());
+        self
     }
 
     pub fn table<'a>(&self, title: &str, data: impl Into<IndexMap<&'a str, String>>) {
