@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 alloy = "0.14.0"
+colored = "3.0.0"
 indexmap = "2.2.5"
