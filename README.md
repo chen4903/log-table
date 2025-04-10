@@ -7,7 +7,7 @@ A simple Rust library providing beautiful and colorful table logging functionali
 Add `log-table` to your `Cargo.toml`.
 
 ```toml
-log-table = "0.1"
+log-table = "0.1.1"
 ```
 
 ## Features
