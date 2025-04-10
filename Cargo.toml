@@ -2,6 +2,17 @@
 name = "log-table"
 version = "0.1.0"
 edition = "2021"
+authors = ["chen4903"]
+keywords = ["log", "table"]
+categories = ["logging"]
+license = "MIT"
+readme = "./README.md"
+documentation = "https://docs.rs/log-table"
+repository = "https://github.com/chen4903/log-table"
+homepage = "https://github.com/chen4903/log-table"
+description = """
+Print and save logs in a table format.
+"""
 
 [dependencies]
 alloy = "0.14.0"
