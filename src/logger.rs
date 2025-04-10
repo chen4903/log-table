@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use indexmap::IndexMap;
 
 pub struct Logger {
@@ -23,8 +25,11 @@ impl Logger {
         self
     }
 
-    pub fn table<'a>(&self, title: &str, data: impl Into<IndexMap<&'a str, String>>) {
-        let data: IndexMap<&str, String> = data.into();
+    pub fn table<'a, T: Display>(&self, title: &str, data: impl Into<IndexMap<&'a str, T>>) {
+        let data_map: IndexMap<&str, T> = data.into();
+        let data: IndexMap<&str, String> = data_map.into_iter()
+            .map(|(k, v)| (k, format!("{}", v)))
+            .collect();
         
         // Find the longest key and value for proper spacing
         let max_key_len = data.keys().map(|k| k.len()).max().unwrap_or(0);

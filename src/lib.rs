@@ -5,7 +5,8 @@ macro_rules! table_data {
     ($($key:ident : $value:expr),* $(,)?) => {{
         let mut map = ::indexmap::IndexMap::new();
         $(
-            map.insert(stringify!($key), $value.to_string());
+            let value_str = format!("{}", $value);
+            map.insert(stringify!($key), value_str);
         )*
         map
     }};
