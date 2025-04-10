@@ -6,8 +6,6 @@ use std::io::Write;
 use std::path::PathBuf;
 
 pub struct Logger {
-    chain_id: Option<u64>,
-    provider: Option<String>,
     frame_color: Option<Color>,
     content_color: Option<Color>,
     log_file: Option<PathBuf>,
@@ -16,22 +14,10 @@ pub struct Logger {
 impl Logger {
     pub fn new() -> Self {
         Logger {
-            chain_id: None,
-            provider: None,
             frame_color: None,
             content_color: None,
             log_file: None,
         }
-    }
-
-    pub fn with_chain_id(mut self, chain_id: u64) -> Self {
-        self.chain_id = Some(chain_id);
-        self
-    }
-
-    pub fn with_provider(mut self, provider: impl Into<String>) -> Self {
-        self.provider = Some(provider.into());
-        self
     }
 
     pub fn with_frame_color(mut self, color: Color) -> Self {

@@ -3,8 +3,6 @@ use log_table::{color::Color, logger::Logger, table_data};
 
 fn main() {
     let logger = Logger::new()
-        .with_chain_id(1)
-        .with_provider("https://mainnet.infura.io")
         .with_frame_color(Color::Blue)
         .with_save_log("logs/data.log");
 
