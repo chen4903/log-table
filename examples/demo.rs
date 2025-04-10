@@ -5,7 +5,8 @@ fn main() {
     let logger = Logger::new()
         .with_chain_id(1)
         .with_provider("https://mainnet.infura.io")
-        .with_frame_color(Color::Blue);
+        .with_frame_color(Color::Blue)
+        .with_save_log("logs/data.log");
 
     let from_token = address!("f39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
     let to_token = address!("4200000000000000000000000000000000000060");

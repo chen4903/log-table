@@ -1,12 +1,16 @@
 use crate::color::Color;
 use indexmap::IndexMap;
 use std::fmt::Display;
+use std::fs::{self, OpenOptions};
+use std::io::Write;
+use std::path::PathBuf;
 
 pub struct Logger {
     chain_id: Option<u64>,
     provider: Option<String>,
     frame_color: Option<Color>,
     content_color: Option<Color>,
+    log_file: Option<PathBuf>,
 }
 
 impl Logger {
@@ -16,6 +20,7 @@ impl Logger {
             provider: None,
             frame_color: None,
             content_color: None,
+            log_file: None,
         }
     }
 
@@ -37,6 +42,30 @@ impl Logger {
     pub fn with_content_color(mut self, color: Color) -> Self {
         self.content_color = Some(color);
         self
+    }
+
+    pub fn with_save_log(mut self, path: impl Into<PathBuf>) -> Self {
+        self.log_file = Some(path.into());
+        // Create directory if it doesn't exist
+        if let Some(log_file) = &self.log_file {
+            if let Some(parent) = log_file.parent() {
+                fs::create_dir_all(parent).ok();
+            }
+        }
+        self
+    }
+
+    fn write_to_log(&self, content: &str) {
+        if let Some(log_file) = &self.log_file {
+            if let Ok(mut file) = OpenOptions::new().create(true).append(true).open(log_file) {
+                writeln!(file, "{}", content).ok();
+            }
+        }
+    }
+
+    fn print_and_log(&self, content: &str) {
+        println!("{}", content);
+        self.write_to_log(content);
     }
 
     fn colorize_frame(&self, s: &str) -> String {
@@ -76,19 +105,16 @@ impl Logger {
         let title_content =
             self.colorize_content(&format!("{:^width$}", title, width = total_width - 2));
 
-        println!("{}", top_border);
-        println!(
+        self.print_and_log(&top_border);
+        self.print_and_log(&format!(
             "{}{}{}",
             title_border_left, title_content, title_border_right
-        );
-        println!(
-            "{}",
-            self.colorize_frame(&format!(
-                "├{}┬{}┤",
-                "─".repeat(key_col_width),
-                "─".repeat(val_col_width)
-            ))
-        );
+        ));
+        self.print_and_log(&self.colorize_frame(&format!(
+            "├{}┬{}┤",
+            "─".repeat(key_col_width),
+            "─".repeat(val_col_width)
+        )));
 
         // Headers
         let header_left = self.colorize_frame("│");
@@ -99,18 +125,15 @@ impl Logger {
         let value_header =
             self.colorize_content(&format!(" {:<width$} ", "Value", width = max_val_len));
 
-        println!(
+        self.print_and_log(&format!(
             "{}{}{}{}{}",
             header_left, key_header, header_middle, value_header, header_right
-        );
-        println!(
-            "{}",
-            self.colorize_frame(&format!(
-                "├{}┼{}┤",
-                "─".repeat(key_col_width),
-                "─".repeat(val_col_width)
-            ))
-        );
+        ));
+        self.print_and_log(&self.colorize_frame(&format!(
+            "├{}┼{}┤",
+            "─".repeat(key_col_width),
+            "─".repeat(val_col_width)
+        )));
 
         let entries: Vec<_> = data.iter().collect();
         for (i, (key, value)) in entries.iter().enumerate() {
@@ -122,31 +145,25 @@ impl Logger {
             let value_content =
                 self.colorize_content(&format!(" {:<width$} ", value, width = max_val_len));
 
-            println!(
+            self.print_and_log(&format!(
                 "{}{}{}{}{}",
                 row_left, key_content, row_middle, value_content, row_right
-            );
+            ));
 
             if i < entries.len() - 1 {
-                println!(
-                    "{}",
-                    self.colorize_frame(&format!(
-                        "├{}┼{}┤",
-                        "─".repeat(key_col_width),
-                        "─".repeat(val_col_width)
-                    ))
-                );
+                self.print_and_log(&self.colorize_frame(&format!(
+                    "├{}┼{}┤",
+                    "─".repeat(key_col_width),
+                    "─".repeat(val_col_width)
+                )));
             }
         }
 
-        println!(
-            "{}",
-            self.colorize_frame(&format!(
-                "└{}┴{}┘",
-                "─".repeat(key_col_width),
-                "─".repeat(val_col_width)
-            ))
-        );
-        println!();
+        self.print_and_log(&self.colorize_frame(&format!(
+            "└{}┴{}┘",
+            "─".repeat(key_col_width),
+            "─".repeat(val_col_width)
+        )));
+        self.print_and_log("");
     }
 }

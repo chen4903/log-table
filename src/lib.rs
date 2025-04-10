@@ -1,5 +1,5 @@
-pub mod logger;
 pub mod color;
+pub mod logger;
 
 #[macro_export]
 macro_rules! table_data {
